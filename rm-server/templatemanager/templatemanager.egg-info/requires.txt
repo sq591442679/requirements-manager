@@ -1,0 +1,10 @@
+flask
+flask_cors
+pymongo
+tornado
+requests
+jieba
+pandas
+sklearn
+gensim
+wordcloud

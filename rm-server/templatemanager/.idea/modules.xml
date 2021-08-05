@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../filemanager/.idea/filemanager.iml" filepath="$PROJECT_DIR$/../filemanager/.idea/filemanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../gateway/.idea/gateway.iml" filepath="$PROJECT_DIR$/../gateway/.idea/gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../grpc-latest/.idea/grpc-latest.iml" filepath="$PROJECT_DIR$/../../../grpc-latest/.idea/grpc-latest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../projectmanager/.idea/projectmanager.iml" filepath="$PROJECT_DIR$/../projectmanager/.idea/projectmanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../requirementmanager/.idea/requirementmanager.iml" filepath="$PROJECT_DIR$/../requirementmanager/.idea/requirementmanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/templatemanager.iml" filepath="$PROJECT_DIR$/.idea/templatemanager.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../usermanager/.idea/usermanager.iml" filepath="$PROJECT_DIR$/../usermanager/.idea/usermanager.iml" />
+    </modules>
+  </component>
+</project>
