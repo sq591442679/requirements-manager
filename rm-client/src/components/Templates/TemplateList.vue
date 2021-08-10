@@ -35,7 +35,7 @@
               <el-button type="primary" size="small" icon="el-icon-edit" @click="viewTemplate(scope.$index)"></el-button>
             </el-tooltip>
             <el-tooltip effect="light" content="下载模板文档" placement="top-start">
-              <el-button type="info" size="small" icon="el-icon-download" @click="downloadTemplate(scope.row.template_name)"></el-button>
+              <el-button type="success" size="small" icon="el-icon-download" @click="downloadTemplate(scope.row.template_name)"></el-button>
             </el-tooltip>
             <el-tooltip effect="light" content="删除模板" placement="top-start">
               <el-button type="danger" size="small" icon="el-icon-delete" @click="deleteTemplate(scope.row.template_name)"></el-button>
@@ -267,7 +267,7 @@ export default {
         this.currentItemizeTag = '创建模板成功'
         console.log(this.introduction)
         this.introduction = ''
-        this.getTemplateList()
+        await this.getTemplateList()
       } else {
         this.$message.error(res.meta.msg)
         this.currentItemizeTag = '创建模板失败'
@@ -297,7 +297,7 @@ export default {
           })
           if (res.meta.status === 200) {
             this.$message.success(res.meta.msg)
-            this.getTemplateList()
+            await this.getTemplateList()
           } else {
             this.$message.error(res.meta.msg)
           }
@@ -351,18 +351,46 @@ export default {
     // }
     async downloadTemplate (fileName) {
       console.log('文件名：' + fileName)
-      axios.post(
-        '/template/download_from_local',
-        {
+      const {
+        data: res
+      } = await this.$http({
+        method: 'get',
+        url: '/template/download',
+        headers: {
+          'Authorization': window.sessionStorage.getItem('token')
+        },
+        params: {
           'file': fileName
         }
-      ).then(
-        (response) => {
-          window.location.href = response.data
+      })
+      if (res.meta.status === 200) {
+        this.$message.success(res.meta.msg)
+        // handle base64
+        let base64_str = res.data.file_base64
+        // data:application/msword;base64,
+        const docxUrl =
+          'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,'
+          + base64_str
+        // 如果浏览器支持msSaveOrOpenBlob方法（也就是使用IE浏览器的时候），那么调用该方法去下载图片
+        if (window.navigator.msSaveOrOpenBlob) {
+          var bstr = atob(base64_str)
+          var n = bstr.length
+          var u8arr = new Uint8Array(n)
+          while (n--) {
+            u8arr[n] = bstr.charCodeAt(n)
+          }
+          var blob = new Blob([u8arr])
+          window.navigator.msSaveOrOpenBlob(blob, fileName + '.' + 'docx')
+        } else {
+          // 这里就按照chrome等新版浏览器来处理
+          const a = document.createElement('a')
+          a.href = docxUrl
+          a.setAttribute('download', fileName)
+          a.click()
         }
-      )
-      // window.location.href = 'E:\\BUAA\\BUAA课程\\大三下\\生产实习\\需求管理工具' +
-      //   '\\RequirementsManager-master\\rm-server\\templatemanager\\templatemanager\\uploads' + fileName.toString(); // 本窗口打开下载
+      } else {
+        this.$message.error(res.meta.msg)
+      }
     }
   }
 }
