@@ -25,8 +25,6 @@ from gateway.router.filemanager.file.delete import file_delete
 from gateway.router.filemanager.file.getscope import file_getscope
 from gateway.router.filemanager.file.getspread import file_getspread
 
-
-
 from gateway.router.requirementmanager.requirement.tree.list import requirement_tree_list
 from gateway.router.requirementmanager.requirement.tree.edit import requirement_tree_edit
 from gateway.router.requirementmanager.requirement.create import requirement_create
@@ -60,3 +58,5 @@ from gateway.router.templatemanager.document.comments.classify import comments_c
 from gateway.router.templatemanager.document.comments.wordcloud import comments_wordcloud
 from gateway.router.templatemanager.document.comments.upload import comments_upload
 from gateway.router.templatemanager.document.comments.similarity import comments_similarity
+
+from gateway.router.templatemanager.template.download import template_download

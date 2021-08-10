@@ -113,6 +113,8 @@
 
 <script>
 /* eslint-disable */
+import axios from 'axios'
+
 export default {
   created () {
     this.getTemplateList();
@@ -235,6 +237,7 @@ export default {
         this.currentUploadFileTag = '上传成功'
         this.uploadFileToken = res.data.token
         console.log(this.uploadFileToken)
+        console.log('path:' + res.data.path)
       } else {
         this.$message.error(res.meta.msg)
         this.currentUploadFileTag = '上传失败'
@@ -303,21 +306,63 @@ export default {
         .catch(() => {})
     },
     // 下载模板文档
-    downloadTemplate: async function(file) {
-      console.log("开始下载" + file);
-      const {
-        data: res
-      } = await this.$http({
-        method: 'get',
-        url: '/template/download',
-        headers: {
-          'Authorization': window.sessionStorage.getItem('token')
-        },
-        data: {
-          // token: this.uploadFileToken,
-          // introduction: this.introduction
+    // downloadTemplate: async function(file) {
+    //   console.log("开始下载" + file);
+    //   const {
+    //     data: res
+    //   } = await this.$http({
+    //     method: 'get',
+    //     url: '/template/download',
+    //     headers: {
+    //       'Authorization': window.sessionStorage.getItem('token')
+    //     },
+    //     params: {
+    //       'file': file
+    //     }
+    //   })
+    //   if (res.meta.status === 200) {
+    //     this.$message.success(res.meta.msg)
+    //     // handle base64
+    //     let base64_str = res.data.file_base64
+    //     // data:application/msword;base64,
+    //     const docxUrl =
+    //       'data:application/vnd.openxmlformats-officedocument.wordprocessingml.document;base64,'
+    //       + base64_str
+    //     // 如果浏览器支持msSaveOrOpenBlob方法（也就是使用IE浏览器的时候），那么调用该方法去下载图片
+    //     if (window.navigator.msSaveOrOpenBlob) {
+    //       var bstr = atob(base64_str)
+    //       var n = bstr.length
+    //       var u8arr = new Uint8Array(n)
+    //       while (n--) {
+    //         u8arr[n] = bstr.charCodeAt(n)
+    //       }
+    //       var blob = new Blob([u8arr])
+    //       window.navigator.msSaveOrOpenBlob(blob, document_name + '.' + 'docx')
+    //     } else {
+    //       // 这里就按照chrome等新版浏览器来处理
+    //       const a = document.createElement('a')
+    //       a.href = docxUrl
+    //       a.setAttribute('download', document_name)
+    //       a.click()
+    //     }
+    //   } else {
+    //     this.$message.error(res.meta.msg)
+    //   }
+    // }
+    async downloadTemplate (fileName) {
+      console.log('文件名：' + fileName)
+      axios.post(
+        '/template/download_from_local',
+        {
+          'file': fileName
         }
-      })
+      ).then(
+        (response) => {
+          window.location.href = response.data
+        }
+      )
+      // window.location.href = 'E:\\BUAA\\BUAA课程\\大三下\\生产实习\\需求管理工具' +
+      //   '\\RequirementsManager-master\\rm-server\\templatemanager\\templatemanager\\uploads' + fileName.toString(); // 本窗口打开下载
     }
   }
 }

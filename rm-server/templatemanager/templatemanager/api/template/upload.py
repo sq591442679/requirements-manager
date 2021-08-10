@@ -27,6 +27,7 @@ def template_upload():
     return {
         'meta': META_SUCCESS,
         'data': {
-            'token': filename
+            'token': filename,
+            'path': filepath
         }
     }

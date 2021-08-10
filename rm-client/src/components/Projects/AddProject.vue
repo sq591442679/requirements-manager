@@ -16,11 +16,10 @@
       <el-steps :active="activeIndex - 0" align-center>
         <el-step title="项目信息"></el-step>
         <el-step title="添加成员"></el-step>
-        <el-step title="添加需求"></el-step>
       </el-steps>
       <!-- 主体 -->
       <el-tabs v-model="activeIndex" tab-position="left" style="overflow: auto;"
-        :before-leave="beforeTabLeave">
+        :before-leave="beforeLeaveCheck">
         <!-- 项目信息 -->
         <el-tab-pane label="项目信息" name="0">
           <el-form class="project-form" label-position="top" label-width="100px" :model="projectForm"
@@ -39,7 +38,7 @@
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="submitProjectInfo()">下一步</el-button>
+              <el-button type="primary" @click="beforeLeaveCheck()">下一步</el-button>
             </el-form-item>
           </el-form>
         </el-tab-pane>
@@ -73,13 +72,14 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button type="primary" @click="submitProjectInfo()" tyle="margin-top: 20px;">下一步</el-button>
+          <el-button type="primary" @click="createProject()" tyle="margin-top: 20px;">创建项目并添加需求</el-button>
         </el-tab-pane>
-        <!-- 添加需求 -->
-        <el-tab-pane label="添加需求" name="2">
-          <!-- 确认按钮区 -->
-          <el-button type="primary" @click="createProject()" style="margin-top: 20px;">创建项目</el-button>
-        </el-tab-pane>
+<!--        &lt;!&ndash; 添加需求 &ndash;&gt;-->
+<!--        <el-tab-pane label="添加需求" name="2">-->
+<!--          &lt;!&ndash; 确认按钮区 &ndash;&gt;-->
+<!--          <router-view></router-view>-->
+<!--          <el-button type="primary" @click="CreateRequirements()" style="margin-top: 20px;">完成需求</el-button>-->
+<!--        </el-tab-pane>-->
       </el-tabs>
     </el-card>
 
@@ -166,24 +166,39 @@ export default {
         this.$message.error(res.meta.msg)
       }
     },
-    // 阻止标签页切换
-    beforeTabLeave (newActive, oldActive) {
-      if (oldActive === '0' && newActive === '1') {
-        this.$refs.projectFormRef.validate(valid => {
-          if (!valid) {
-            this.$message.error('请完成项目信息！')
-            this.isAllowTabLeave = false
-          } else {
-            this.isAllowTabLeave = true
-          }
-        })
-      }
-      return this.isAllowTabLeave
-    },
-    submitProjectInfo () {
-      this.beforeTabLeave('1', '0')
-      if (this.isAllowTabLeave === true) {
-        this.activeIndex = '1'
+    // // 阻止标签页切换
+    // beforeTabLeave (newActive, oldActive) {
+    //   if (oldActive === '0' && newActive === '1') {
+    //     this.$refs.projectFormRef.validate(valid => {
+    //       if (!valid) {
+    //         this.$message.error('请完成项目信息！')
+    //         this.isAllowTabLeave = false
+    //       } else {
+    //         this.isAllowTabLeave = true
+    //       }
+    //     })
+    //   }
+    //   return this.isAllowTabLeave
+    // },
+    // submitProjectInfo () {
+    //   this.beforeTabLeave('1', '0')
+    //   if (this.isAllowTabLeave === true) {
+    //     this.activeIndex = '1'
+    //   }
+    // },
+    beforeLeaveCheck () {
+      // 离开每一页之前检查
+      if (this.activeIndex === '0') {
+        if (this.projectForm.projectName === '') {
+          this.$message.error('请填写项目名！')
+          return false
+        } else {
+          this.activeIndex = '1'
+          return true
+        }
+      } else if (this.activeIndex === '1') {
+        this.activeIndex = '2'
+        return true
       }
     },
     addUser () {
@@ -250,10 +265,19 @@ export default {
         data: body
       })
       if (res.meta.status === 200) {
-        this.$message.success(res.meta.msg)
-        this.$router.push('/projects/projectList')
+        console.log(res.data)
+        this.$message.success('已创建项目，请输入需求')
+        // await this.$router.push('/projects/projectList')
+        this.activeIndex = '2'
       } else {
         this.$message.error(res.meta.msg)
+      }
+      await this.$router.push({
+        path: '/projects/projectHomepage',
+        query: { projectId: res.data.projectId, projectName: res.data.projectName }
+      })
+      for (let i = 0; i < this.projectList.length; i++) {
+        console.log('name:' + this.projectList[i].projectName + '\n')
       }
     }
   }

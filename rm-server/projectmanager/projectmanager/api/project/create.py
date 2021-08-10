@@ -42,6 +42,13 @@ def project_create():
     project_userlist_dao.edit_users(project._id, users)
     # 初始化基线
     baseline_dao.create(project._id)
+    # print('meta:')
+    # print(META_SUCCESS)
+    # print(project.project_name)
     return {
-        'meta': META_SUCCESS
+        'meta': META_SUCCESS,
+        'data': {
+            'projectName': project.project_name,
+            'projectId': project._id
+        }
     }

@@ -4,7 +4,7 @@ from templatemanager.dao.template import (
     Template, TemplateMongoDBDao
 )
 from templatemanager.mongodb import template_collection
-from templatemanager.utils.handle_api import handle_response
+from templatemanager.utils.handle_api import handle_response, handle_download
 
 from docx import Document
 import io
@@ -13,12 +13,13 @@ META_SUCCESS = {'status': 200, 'msg': '模板生成成功！'}
 META_ERROR_NOT_EXIST = {'status': 404, 'msg': '生成失败，该模板不存在！'}
 
 
-@app.route('/template/download', methods=[''])
-@handle_response
+@app.route('/template/download', methods=['GET'])
+@handle_download
 def template_download():
-    body = request.json
+    body = request.args.get('file')
 
     template_name = body
+    print('name:' + template_name)
     template_mongodb_dao = TemplateMongoDBDao(template_collection)
     # check if template not exists
     template = template_mongodb_dao.get_template(template_name)

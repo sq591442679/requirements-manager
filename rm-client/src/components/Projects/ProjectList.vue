@@ -72,6 +72,7 @@ export default {
         this.projectList = []
         // 遍历结果数组，赋值给 projectList
         for (let i = 0; i < res.data.length; i++) {
+          // console.log(res.data[i].project_name)
           this.projectList.push(
             {
               projectId: res.data[i]._id,
@@ -88,6 +89,7 @@ export default {
       this.$router.push('/projects/addProject')
     },
     projectInfo (projectId) {
+      console.log('id:' + projectId)
       this.$router.push({ path: '/projects/projectProfile', query: { projectId: projectId } })
     },
     deleteProject (projectId) {
@@ -117,6 +119,7 @@ export default {
       })
     },
     jumpToProjectHomepage (projectId, projectName) {
+      // console.log(projectName)
       this.$router.push({
         path: '/projects/projectHomepage',
         query: { projectId: projectId, projectName: projectName }

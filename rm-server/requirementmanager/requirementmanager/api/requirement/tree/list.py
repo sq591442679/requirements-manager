@@ -28,6 +28,7 @@ def requirement_tree_list():
 
     resp_data = tree.get_elementui_tree()
     add_section_number(resp_data, 1)
+    print(resp_data)
 
     return {
         'meta': META_SUCCESS,

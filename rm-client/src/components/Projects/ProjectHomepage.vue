@@ -13,11 +13,13 @@
     <!-- 主体区 -->
     <el-card class="box-card">
       <!-- 工具栏区 -->
-      <el-row :gutter="20" style="margin-bottom: 20px;">
+      <el-alert title="编辑需求完成后，请点击下方完成按钮" type="info" center show-icon></el-alert>
+      <el-row :gutter="20" style="margin-bottom: 20px; margin-top: 20px">
         <el-col :span="6">
           <div><span style="color: ghostwhite;">目录</span></div>
         </el-col>
         <el-col :span="18">
+
           <!-- 添加需求按钮 -->
           <el-dropdown trigger="click" size="medium" @command="handleAddRequirement">
             <el-button type="primary" icon="el-icon-plus" plain round>添加</el-button>
@@ -32,8 +34,10 @@
           <el-button type="warning" icon="el-icon-sort" plain round
           @click="handleMoveRequirement()" style="margin-left: 10px;">移动</el-button>
           <!--- 删除按钮 -->
-          <el-button type="danger" icon="el-icon-sort" plain round
+          <el-button type="danger" icon="el-icon-delete" plain round
           @click="deleteRequirement()">删除</el-button>
+          <el-button type="success" icon="el-icon-check" plain round
+                     @click="finish">完成</el-button>
         </el-col>
       </el-row>
       <!-- 工具栏下部 -->
@@ -310,6 +314,22 @@ export default {
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消删除' })
       })
+    },
+    finish () { // 检查需求是否为空，若不空则跳回项目列表
+      this.getRequirementTree()
+      let cnt = 0
+      for (let i = 0; i < this.requirementTree.length; ++i) {
+        if (this.requirementTree[i].children.length === 0) {
+          cnt++
+        }
+      }
+      if (cnt === 4) {
+        this.$message.error('项目需求不能为空')
+      } else {
+        this.$router.push({
+          path: '/projects/projectList'
+        })
+      }
     }
   }
 }

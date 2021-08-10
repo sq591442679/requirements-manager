@@ -142,15 +142,18 @@
 </template>
 
 <script>
+
 export default {
   created () {
     this.getProjectProfile()
     this.getProjectUserList()
     this.getUserList()
     this.getBaselineNodes()
+    this.getRequirementTree()
   },
   data () {
     return {
+      projectId: this.$route.query.projectId,
       activeIndex: '0',
       dialogVisiable: {
         editProjectRole: false,
@@ -190,7 +193,29 @@ export default {
         name: [
           { required: true, message: '请输入归档版本名称', trigger: 'blur' }
         ]
-      }
+      },
+      requirementTree: [
+        {
+          _id: '2',
+          label: '1 功能需求',
+          children: []
+        },
+        {
+          _id: '3',
+          label: '2 性能需求',
+          children: []
+        },
+        {
+          _id: '4',
+          label: '3 可靠性需求',
+          children: []
+        },
+        {
+          _id: '7',
+          label: '4 安全性需求',
+          children: []
+        }
+      ]
     }
   },
   methods: {
@@ -397,6 +422,30 @@ export default {
           }
         }
       )
+    },
+    // 获取该项目的需求列表
+    async getRequirementTree () {
+      console.log(this.requirementTree[0].label + ':' + this.requirementTree[0].children[0])
+      console.log('id:' + this.projectId)
+      const { data: res } = await this.$http({
+        method: 'get',
+        url: '/requirement/tree/list',
+        headers: {
+          'Authorization': window.sessionStorage.getItem('token')
+        },
+        params: {
+          project_id: this.projectId
+        }
+      })
+      console.log('res:' + res.data[0].label + res.data[0].children[0].label)
+      if (res.meta.status === 200) {
+        this.requirementTree = res.data
+        // console.log(this.requirementTree[0].children.toString())
+      } else {
+        // this.$message.error(res.meta.msg)
+      }
+      // console.log(this.requirementTree[2].label)
+      // console.log('len:' + this.requirementTree[2].children.length)
     }
   }
 }
